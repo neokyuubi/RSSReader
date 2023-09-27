@@ -27,6 +27,15 @@ namespace RSSReader.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Articles(Guid id)
+        {
+            var feed = await dBContexto.Feeds.FirstOrDefaultAsync(feed => feed.Id == id);
+
+            // return await Task.Run(() => View("View", viewModel));
+            return View("Articles", feed);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(AddFeedViewModel addFeedRequest)
         {
@@ -72,6 +81,22 @@ namespace RSSReader.Controllers
                 feed.Url = updateFeedViewRequest.Url;
 
                 await dBContexto.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index"); // show error page if no feed is found
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UpdateFeedViewModel updateFeedViewRequest)
+        {
+            var feed = await dBContexto.Feeds.FindAsync(updateFeedViewRequest.Id);
+            if (feed != null)
+            {
+                dBContexto.Feeds.Remove(feed);
+                await dBContexto.SaveChangesAsync();
+
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index"); // show error page if no feed is found
