@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using RSSReader.Data;
 using RSSReader.Models;
+using System.ServiceModel.Syndication;
+using System.Xml;
 
 namespace RSSReader.Controllers
 {
@@ -30,10 +32,44 @@ namespace RSSReader.Controllers
         [HttpGet]
         public async Task<IActionResult> Articles(Guid id)
         {
-            var feed = await dBContexto.Feeds.FirstOrDefaultAsync(feed => feed.Id == id);
+            var feedObj = await dBContexto.Feeds.FirstOrDefaultAsync(feed => feed.Id == id);
+            IEnumerable<Article>? articlesFeed = null;
+
+            if (feedObj != null)
+            {
+                try
+                {
+                    var httpClient = new HttpClient();
+                    var response = await httpClient.GetStringAsync(feedObj.Url);
+                    var xmlReaderSettings = new XmlReaderSettings
+                    {
+                        DtdProcessing = DtdProcessing.Parse
+                    };
+                    using (var stringReader = new StringReader(response))
+                    {
+                        using (var xmlReader = XmlReader.Create(stringReader, xmlReaderSettings))
+                        {
+                            var feed = SyndicationFeed.Load(xmlReader);
+                            if (feed != null)
+                            {
+                                var articles = feed.Items.Select(item => new Article
+                                {
+                                    Title = item.Title.Text,
+                                    PubDate = item.PublishDate.DateTime.ToString(),
+                                }).ToList();
+                                articlesFeed = articles;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return View("Articles", articlesFeed);
+                }
+            }
 
             // return await Task.Run(() => View("View", viewModel));
-            return View("Articles", feed);
+            return View("Articles", articlesFeed);
         }
 
         [HttpPost]

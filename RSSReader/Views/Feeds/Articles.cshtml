@@ -1,7 +1,31 @@
-﻿@model RSSReader.Models.Feed
+﻿@model List<RSSReader.Models.Article>
 
 @{
 }
 
+@if(Model != null)
+{
+    <h1>Articles</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>PubDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in Model)
+            {
+                <tr>
+                    <td>@article.Title</td>
+                    <td>@article.PubDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>  
+}
+else
+{
+    <h1>No Articles for this URL</h1>
+}
 
-<div>@Model.Name</div>
