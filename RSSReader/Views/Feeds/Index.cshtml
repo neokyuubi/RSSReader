@@ -1,0 +1,25 @@
+﻿@model List<RSSReader.Models.Feed>
+
+@{
+}
+
+<h1>Feeds</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Url</th>
+            <th>📜</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var feed in Model)
+        {
+            <tr>
+                <td>@feed.Name</td>
+                <td>@feed.Url</td>
+                <td> <a href="Feeds/View/@feed.Id">View</a> </td>
+            </tr>
+        }
+    </tbody>
+</table>
