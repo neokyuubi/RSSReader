@@ -4,24 +4,32 @@
 }
 
 <h1>Feeds</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Url</th>
-            <th>📜</th>
-            <th>🎫</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var feed in Model)
-        {
+<form method="post" asp-controller="Feeds" asp-action="DeleteAll">
+
+    <table class="table">
+        <thead>
             <tr>
-                <td>@feed.Name</td>
-                <td>@feed.Url</td>
-                <td> <a href="Feeds/View/@feed.Id">Details</a> </td>
-                <td> <a href="Feeds/Articles/@feed.Id">Articles</a> </td>
+                <th>Name</th>
+                <th>Url</th>
+                <th>Details</th>
+                <th>Articles</th>
+                <th><input type="checkbox" id="selectAll"/></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach(var feed in Model)
+            {
+                <tr>
+                    <td>@feed.Name</td>
+                    <td>@feed.Url</td>
+                    <td> <a title="View Details" href="Feeds/Details/@feed.Id">📜</a> </td>
+                    <td> <a title="View Article" href="Feeds/Articles/@feed.Id">🎫</a> </td>
+                    <td>
+                        <input value="@feed.Id" type="checkbox" name="selectedItems">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-danger">Delete Selected</button>
+</form>

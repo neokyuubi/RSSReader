@@ -62,13 +62,13 @@ namespace RSSReader.Controllers
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return View("Articles", articlesFeed);
                 }
+
             }
 
-            // return await Task.Run(() => View("View", viewModel));
             return View("Articles", articlesFeed);
         }
 
@@ -90,7 +90,7 @@ namespace RSSReader.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> View(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var feed = await dBContexto.Feeds.FirstOrDefaultAsync(feed => feed.Id == id);
             if (feed != null)
@@ -101,35 +101,57 @@ namespace RSSReader.Controllers
                     Name = feed.Name,
                     Url = feed.Url,
                 };
-                return await Task.Run(() => View("View", viewModel));
+                return await Task.Run(() => View("Details", viewModel));
             }
 
             return RedirectToAction("Index");
         }
 
+        // For Edit
+        //[HttpPost]
+        //public async Task<IActionResult> View(UpdateFeedViewModel updateFeedViewRequest)
+        //{
+        //    var feed = await dBContexto.Feeds.FindAsync(updateFeedViewRequest.Id);
+        //    if (feed != null)
+        //    {
+        //        feed.Name = updateFeedViewRequest.Name;
+        //        feed.Url = updateFeedViewRequest.Url;
+
+        //        await dBContexto.SaveChangesAsync();
+        //    }
+
+        //    return RedirectToAction("Index"); // show error page if no feed is found
+        //}
+
+
         [HttpPost]
-        public async Task<IActionResult> View(UpdateFeedViewModel updateFeedViewRequest)
+        public async Task<IActionResult> Delete(UpdateFeedViewModel updateFeed, string[] checkboxes)
         {
-            var feed = await dBContexto.Feeds.FindAsync(updateFeedViewRequest.Id);
+            var feed = await dBContexto.Feeds.FindAsync(updateFeed.Id);
             if (feed != null)
             {
-                feed.Name = updateFeedViewRequest.Name;
-                feed.Url = updateFeedViewRequest.Url;
-
+                dBContexto.Feeds.Remove(feed);
                 await dBContexto.SaveChangesAsync();
+
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index"); // show error page if no feed is found
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Delete(UpdateFeedViewModel updateFeedViewRequest)
+        public async Task<IActionResult> DeleteAll(string[] selectedItems)
         {
-            var feed = await dBContexto.Feeds.FindAsync(updateFeedViewRequest.Id);
-            if (feed != null)
+            var selectedGuids = selectedItems.Select(Guid.Parse).ToArray();
+
+            var feedsToDelete = await dBContexto.Feeds
+                .Where(f => selectedGuids.Contains(f.Id))
+                .ToListAsync();
+
+
+            if (feedsToDelete != null && feedsToDelete.Any())
             {
-                dBContexto.Feeds.Remove(feed);
+                dBContexto.Feeds.RemoveRange(feedsToDelete);
                 await dBContexto.SaveChangesAsync();
 
                 return RedirectToAction("Index");

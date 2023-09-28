@@ -1,0 +1,42 @@
+﻿@model RSSReader.Models.UpdateFeedViewModel
+
+@{
+}
+
+<h1 class="mt-5">Details</h1>
+
+<form method="post">
+
+    <div class="mb-3">
+        <input readonly type="hidden" class="form-control" asp-for="Id" id="Id">
+    </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input readonly type="text" class="form-control" asp-for="Name" id="name">
+    </div>
+    <div class="mb-3">
+        <label for="url" class="form-label">Url</label>
+        <input readonly id="url" type="url" class="form-control" asp-for="Url">
+    </div>
+
+
+
+    <div class="mb-3">
+        <label for="xx" class="form-label">xx</label>
+        <input value="xx" id="xx" type="checkbox" name="checkboxes">
+    </div>
+
+    <div class="mb-3">
+        <label for="yy" class="form-label">yy</label>
+        <input value="yy" id="yy" type="checkbox" name="checkboxes">
+    </div>
+
+    <div class="mb-3">
+        <label for="zz" class="form-label">zz</label>
+        <input value="zz" id="zz" type="checkbox" name="checkboxes">
+    </div>
+
+
+    <button type="submit" asp-action="Delete" asp-controller="Feeds" class="btn btn-danger">Delete</button>
+    <a asp- asp-action="Index" asp-controller="Feeds" class="btn btn-warning">Back</a>
+</form>
