@@ -7,15 +7,12 @@
 <form method="post" action="Add">
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" asp-for="Name" id="name" aria-describedby="name">
+        <input type="text" class="form-control" asp-for="Name" id="name" autocomplete="off">
     </div>
     <div class="mb-3">
         <label for="url" class="form-label">Url</label>
-        <input type="url" class="form-control" asp-for="Url">
+        <input type="url" class="form-control" asp-for="Url" autocomplete="off">
     </div>
-@*     <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div> *@
+
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

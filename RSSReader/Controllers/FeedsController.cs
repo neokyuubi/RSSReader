@@ -33,6 +33,8 @@ namespace RSSReader.Controllers
         public async Task<IActionResult> Articles(Guid id)
         {
             var feedObj = await dBContexto.Feeds.FirstOrDefaultAsync(feed => feed.Id == id);
+            ViewBag.FeedName = feedObj?.Name; // will not be shown if null
+            ViewBag.FeedId = feedObj?.Id; // will not be shown if null
             IEnumerable<Article>? articlesFeed = null;
 
             if (feedObj != null)
@@ -57,7 +59,7 @@ namespace RSSReader.Controllers
                                     Title = item.Title.Text,
                                     PubDate = item.PublishDate.DateTime.ToString(),
                                 }).ToList();
-                                articlesFeed = articles;
+                                articlesFeed = articles.OrderByDescending(article => DateTime.TryParse(article.PubDate, out var pubDate) ? pubDate : DateTime.MinValue).ToList();
                             }
                         }
                     }
@@ -125,7 +127,7 @@ namespace RSSReader.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(UpdateFeedViewModel updateFeed, string[] checkboxes)
+        public async Task<IActionResult> Delete(UpdateFeedViewModel updateFeed)
         {
             var feed = await dBContexto.Feeds.FindAsync(updateFeed.Id);
             if (feed != null)
@@ -136,7 +138,7 @@ namespace RSSReader.Controllers
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index"); // show error page if no feed is found
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -157,7 +159,13 @@ namespace RSSReader.Controllers
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index"); // show error page if no feed is found
+            return RedirectToAction("Index");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Filter(string Id, string startDate, string endDate)
+        //{
+        //    return await Articles(Guid.Parse(Id));
+        //}
     }
 }

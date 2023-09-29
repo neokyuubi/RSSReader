@@ -1,38 +1,48 @@
 ﻿@model List<RSSReader.Models.Article>
 
 @{
-    // var currentUrl = Context.Request.Path.ToString();
-    // var parts = currentUrl.Split('/');
-    // var lastPart = parts.LastOrDefault();
 }
 
 @if(Model != null)
 {
-    <h1>Articles</h1>
-    <a style="display: block;width: 135px; margin-bottom:20px" asp-action="Articles" asp-controller="Feeds" class="btn btn-primary">Reload</a>
+    <h3>Articles of (@ViewBag.FeedName)</h3>
+    <a style="display: inline-block;width: 135px; margin-bottom:30px" asp-action="Articles" asp-controller="Feeds" class="btn btn-primary">Reload</a>
+    <a style="display: inline-block;width: 135px; margin-bottom:30px" asp-action="Index" asp-controller="Feeds" class="btn btn-warning">Back</a>
 
 
-    <h5 style="text-decoration: underline;">Filter</h5>
+    <h5 class="text-decoration-underline">Filter</h5>
     
-    <div class="">
-        <form method="post">
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <label for="startDate" class="form-label">Start Date:</label>
-                    <input type="text" class="form-control" id="startDate">
-                </div>
-                <div class="col-md-3">
-                    <label for="endDate" class="form-label">End Date:</label>
-                    <input type="text" class="form-control" id="endDate">
-                </div>
-                <div class="col-md-3 d-flex align-items-center">
-                    <button style="margin-top: 16px; width: 100px" class="btn btn-warning" type="submit">Search</button>
-                </div>
+    <form id="filter">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="startDate" class="form-label">Start Date:</label>
+                <input type="text" class="form-control" id="startDate" name="startDate" autocomplete="off">
             </div>
-        </form>
-    </div>
+            <div class="col-md-3">
+                <label for="endDate" class="form-label">End Date:</label>
+                <input type="text" class="form-control" id="endDate" name="endDate" autocomplete="off">
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+                <button type="submit" style="margin-top: 16px; width: 100px" class="btn btn-warning">Search</button>
+            </div>
+        </div>
+    </form>
 
-    <hr />
+
+    <h5 class="text-decoration-underline mb-3">Search by title</h5>
+
+    <form id="search">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="title" name="title" autocomplete="off">
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+                <button type="submit" style="width: 100px" class="btn btn-warning">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <hr class="mt-5"/>
 
     <table class="table">
         <thead>
